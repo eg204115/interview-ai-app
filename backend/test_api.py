@@ -1,16 +1,25 @@
-import google.generativeai as genai
+from google import genai
 import os
 from dotenv import load_dotenv
+# from google.genai import errors # Import errors for handling
 
 load_dotenv()
+client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
 
-genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
 model_name = os.getenv("GEMINI_MODEL", "gemini-1.5-flash")
-
-model = genai.GenerativeModel(model_name)
 
 question = input("Ask something: ")
 
-response = model.generate_content(question)
+try:
+    response = client.models.generate_content(
+        model=model_name,
+        contents=question
+    )
+    print(response.text)
+    print(response.model_dump_json(exclude_none=True, indent=4))
 
-print("\nAnswer:\n", response.text)
+# except errors.ServerError as e:
+#     print(f"Server is busy or unavailable (503). Try again in a few seconds.")
+#     print(f"Details: {e}")
+except Exception as e:
+    print(f"An unexpected error occurred: {e}")
