@@ -1,10 +1,20 @@
 from pydantic import BaseModel
+from typing import List, Optional
 
-class QuestionRequest(BaseModel):
+class StartInterviewRequest(BaseModel):
     role: str
     difficulty: str
 
 
 class AnswerRequest(BaseModel):
-    question: str
+    interview_id: str
     answer: str
+
+
+class Interview(BaseModel):
+    role: str
+    difficulty: str
+    questions: List[str]
+    answers: List[str]
+    current_index: int
+    completed: bool
